@@ -11,7 +11,7 @@ base
 base.shape
 
 #/função do numpy para selecionar números random, passa o parametro [0,1], size = tamanho
-# replace = True, para selecionar o mesmo número mais de uma vez, e p = probalidade [0.5, 0.5] chance de 50% 
+# replace = True, para selecionar o mesmo número mais de uma vez, e p = probabilidade [0.5, 0.5] chance de 50% 
 
 
 np.seed(2345) #Semente geradora aleatoria seed, sempre gera os mesmo dados
