@@ -406,5 +406,562 @@ sns.boxplot(data = avaliacoes.query("filmeId in [1,2,919,46578]"), x ="filmeId",
 
 ####################################################Inicio da Aula 03#########################################################################################
 
+#Olá, seja bem-vinda e bem-vindo ao notebook da aula 03! A partir desta aula iremos analisar e discutir uma base de dados junto com você. Por isso, será importante que as discussões nos vídeos sejam acompanhadas para entender todos os processos das análises.
+
+#Nessa aula utilizaremos uma base totalmente nova, que nós também não conhecíamos até o momento da análise. Você vai acompanhar a exploração e, principalmente, as dificuldades ao analisar uma base de dados desconhecida.
+
+#Vamos começar importando a nossa base de dados! Nessa aula iremos trabalhar com a IMBD 5000, base que contém uma série de informações sobre filmes, sendo uma pequena amostra da famosa base de dados IMBD.
+
+import pandas as pd
+imdb = pd.read_csv("https://gist.githubusercontent.com/guilhermesilveira/24e271e68afe8fd257911217b88b2e07/raw/e70287fb1dcaad4215c3f3c9deda644058a616bc/movie_metadata.csv")
+imdb.head()
 
 
+#Como você acompanhou, iniciamos a aula tentando conhecer as diversas colunas de cada filme e uma das que chamou mais a atenção foi a color. Vamos conhecer quais valores temos nesta colunas?!
+
+imdb["color"].unique()
+
+#Verificamos que essa coluna color informa se o filme é colorido ou é preto e branco. Vamos descobrir agora quantos filmes de cada tipo nós temos:
+
+imdb["color"].value_counts()
+
+imdb["color"].value_counts(normalize=True)
+
+
+#Agora já descobrimos quantos filmes coloridos e preto e branco temos, e também sabemos que há mais de 5000 filmes na base. Fizemos algo novo, que foi chamar o value_counts(), passando o parâmetro normalize como True. Desse modo, já calculamos qual é a participação de cada um dos tipos de filmes (95% são filmes coloridos).
+
+#Excelente! Agora vamos explorar outra coluna a fim de conhecer os diretores que tem mais filmes na nossa base de dados (lembrando que nossa base é uma amostra muito pequena da realidade)
+
+imdb["director_name"].value_counts()
+
+
+#Steven Spielberg e Woody Allen são os diretores com mais filmes no IMDB 5000.
+
+#Continuando com nossa exploração de algumas informações, vamos olhar para o número de críticas por filmes.
+
+
+imdb["num_critic_for_reviews"]
+
+
+imdb["num_critic_for_reviews"].describe()
+
+
+#Veja que as colunas color e director_name são strings, não fazendo sentido olhar para médias, medianas e afins. Olhar para o número de avaliações já pode ser interessante, por isso usamos o .describe().
+
+#Agora podemos até plotar um histograma para avaliar o número de review.
+
+
+import seaborn as sns
+sns.set_style("whitegrid")
+imdb["num_critic_for_reviews"].plot(kind='hist')
+
+
+#Introdução
+#Olá, seja bem-vinda e bem-vindo ao notebook da aula 03! A partir desta aula iremos analisar e discutir uma base de dados junto com você. Por isso, será importante que as discussões nos vídeos sejam acompanhadas para entender todos os processos das análises.
+
+#Nessa aula utilizaremos uma base totalmente nova, que nós também não conhecíamos até o momento da análise. Você vai acompanhar a exploração e, principalmente, as dificuldades ao analisar uma base de dados desconhecida.
+
+#Vamos começar importando a nossa base de dados! Nessa aula iremos trabalhar com a IMBD 5000, base que contém uma série de informações sobre filmes, sendo uma pequena amostra da famosa base de dados IMBD.
+
+
+import pandas as pd
+imdb = pd.read_csv("https://gist.githubusercontent.com/guilhermesilveira/24e271e68afe8fd257911217b88b2e07/raw/e70287fb1dcaad4215c3f3c9deda644058a616bc/movie_metadata.csv")
+imdb.head()
+
+
+#Como você acompanhou, iniciamos a aula tentando conhecer as diversas colunas de cada filme e uma das que chamou mais a atenção foi a color. Vamos conhecer quais valores temos nesta colunas?!
+
+imdb["color"].unique()
+
+
+#Verificamos que essa coluna color informa se o filme é colorido ou é preto e branco. Vamos descobrir agora quantos filmes de cada tipo nós temos:
+
+
+imdb["color"].value_counts()
+
+
+imdb["color"].value_counts(normalize=True)
+
+
+#Agora já descobrimos quantos filmes coloridos e preto e branco temos, e também sabemos que há mais de 5000 filmes na base. Fizemos algo novo, que foi chamar o value_counts(), passando o parâmetro normalize como True. Desse modo, já calculamos qual é a participação de cada um dos tipos de filmes (95% são filmes coloridos).
+
+#Excelente! Agora vamos explorar outra coluna a fim de conhecer os diretores que tem mais filmes na nossa base de dados (lembrando que nossa base é uma amostra muito pequena da realidade)
+
+
+imdb["director_name"].value_counts()
+
+
+#Steven Spielberg e Woody Allen são os diretores com mais filmes no IMDB 5000.
+
+#Continuando com nossa exploração de algumas informações, vamos olhar para o número de críticas por filmes.
+
+
+imdb["num_critic_for_reviews"]
+
+
+
+imdb["num_critic_for_reviews"].describe()
+
+
+#Veja que as colunas color e director_name são strings, não fazendo sentido olhar para médias, medianas e afins. Olhar para o número de avaliações já pode ser interessante, por isso usamos o .describe().
+
+#Agora podemos até plotar um histograma para avaliar o número de review.
+
+
+import seaborn as sns
+sns.set_style("whitegrid")
+imdb["num_critic_for_reviews"].plot(kind='hist')
+
+
+#Verificamos que poucos filmes tem mais de 500 votos, por isso um paralelo que podemos fazer é que filmes com muitos votos são mais populares e filmes com poucos votos não são tão populares. Logo, pelo histograma fica evidente que poucos filmes fazem muito muito sucesso. Claro que não conseguimos afirmar isso com propriedade, pois, novamente, estamos lidando com um número restrito de dados, mas são pontos interessantes de se pensar.
+#Outra informação interessante de se analisar, são os orçamentos e receitas de um filme, ou seja o aspecto financeiro. Vamos começar pelo gross:
+
+imdb["gross"].hist()
+
+
+#Como você deve ter reparado, essa é a primeira vez que as escalas estão totalmente diferentes, pois no eixo X temos valores tão altos que a escala teve que ser de centena de milhões. Veja como pouquíssimos filmes tem alto faturamento, o que nos acende um primeiro alerta de que tem algo estranho (ou temos filmes que rendem muito dinheiro neste dataset).
+
+#Vamos tentar conhecer quais são esses filmes com faturamento astronômico.
+
+
+imdb.sort_values("gross", ascending=False).head()
+
+
+#Nessa lista temos Avatar, Titanic, Jurassic World e The Avengers, o que parece fazer sentido para nós, pois sabemos que esses foram filmes com bilheterias gigantescas. Analisando esses dados conseguimos verificar que os maiores faturamentos fazem sentido, mas encontramos um problema nos dados, dado que encontramos duas linhas diplicadas. Podemos usar o pandas para remover esses dados, mas por enquanto vamos manter todas as informações (Se estiver curioso em saber como se faz, consulte o .drop_duplicates()).
+
+#Maravilha, agora temos o faturamento e parece estar OK. Queremos começar a responder algumas perguntas e uma delas é: será que filmes coloridos tem faturamento maior que filmes preto e branco?
+
+#Para começar a responder essa pergunta precisamos transformar a coluna Color:
+
+
+color_or_bw = imdb.query("color in ['Color', ' Black and White']")
+color_or_bw["color_0_ou_1"] = (color_or_bw["color"]=="Color") * 1
+color_or_bw["color_0_ou_1"].value_counts()
+
+
+color_or_bw.head()
+
+
+#Veja que agora nós temos uma última coluna em nosso dataframe com valores 0 e 1. Agora podemos construir gráficos com essa informação de filmes coloridos ou não.
+
+#P.S: Em aula tivemos problemas porque Black and White tinha um espaço no início, vou cortar esses detalhes aqui no notebook, mas reforço a importância de acompanhar este processo no vídeo.
+
+
+sns.scatterplot(data=color_or_bw, x="color_0_ou_1", y="gross")
+
+
+
+#Então plotamos nossos dados com um displot! Existem várias formas de visualizar essa informação, mas por ora essa nos ajuda a comparar os resultados. Repare como filmes coloridos tem valores bem maiores (isso já era até esperado), mas também temos pontos bem altos em filmes preto e branco, chamando muito atenção.
+
+#Vamos explorar algumas estatísticas destes filmes:
+
+
+color_or_bw.groupby("color").mean()["gross"]
+
+
+color_or_bw.groupby("color").mean()["imdb_score"]
+
+
+color_or_bw.groupby("color").median()["imdb_score"]
+
+
+#Das estatísticas temos duas bem interessantes, a média e mediana das notas de filmes preto e branco são maiores. Há várias possíveis explicações sobre o porquê disso, reflita aí sobre algumas delas e compartilhe conosco!
+
+#A partir de agora, vamos fazer uma investigação melhor em relação às finanças dos filmes (faturamento e orçamento). Vamos iniciar plotando e interpretando um gráfico de gross por budget:
+
+
+budget_gross=  imdb[["budget", "gross"]].dropna().query("budget >0 | gross > 0")
+
+sns.scatterplot(x="budget", y="gross", data = budget_gross)
+
+
+#Para plotar os dados, primeiro removemos as linhas com informações de faturamento e orçamento vazias e também com valores igual a 0, para então gerar o gráfico.
+
+#Agora vamos analisar esse gráfico juntos, veja que a escala de budget mudou, agora é e10. Repare que apenas poucos filmes tem orçamentos tão grandes assim, e seus faturamentos são muito baixos. Será que temos algum problema nos dados? Vamos investigar melhor!
+
+
+imdb.sort_values("budget", ascending=False).head()
+
+
+#Ordenando os dados pelo budget percebemos que as primeiras posições são de filmes asiáticos. O Guilherme trouxe um ponto interessante para a investigação, pois países como a Coreia usam moedas que tem três casas decimais a mais que o dólar. Então provavelmente o que está ocorrendo é que os dados de orçamento tem valores na moeda local, por isso detectamos valores tão discrepantes.
+
+#Como não temos garantia dos números, vamos precisar trabalhar apenas com filmes americanos, assim garantimos que tanto gross e budget estão em dólares. Então vamos iniciar esse processo:
+
+
+imdb["country"].unique()
+
+
+#Veja que temos filmes de diversos locais de origem:
+
+
+imdb = imdb.drop_duplicates()
+imdb_usa = imdb.query("country == 'USA'")
+imdb_usa.sort_values("budget", ascending=False).head()
+
+
+#Agora temos os dados para fazer uma análise melhor entre gross e budget. Vamos plotar o gráfico novamente:
+
+
+budget_gross = imdb_usa[["budget", "gross"]].dropna().query("budget >0 | gross > 0")
+
+sns.scatterplot(x="budget", y="gross", data = budget_gross)
+
+
+#Veja que interessante, aparentemente temos uma relação entre orçamento e faturamento. Quanto maior o orçamento, maior o faturamento.
+
+#Já que estamos trabalhando com orçamento e faturamento, podemos construir uma nova informação, o lucro, para analisar. De forma bem simplista esse processo de construir novas informações a partir das existentes no dataset é conhecido como feature engineering.
+
+
+imdb_usa['lucro'] = imdb_usa['gross'] - imdb_usa['budget']
+
+budget_gross = imdb_usa.query("budget >0 | gross > 0")[["budget", "lucro"]].dropna()
+
+sns.scatterplot(x="budget", y="lucro", data = budget_gross)
+
+
+#MUito bom! Nós construímos nossa coluna lucro na base de dados e plotamos o orçamento contra lucro.
+
+#Repare que temos pontos interessantes nesta visualização, um deles são esses filmes com muito custo e prejuizo. Isso pode ser um prejuizo real, mas também podem ser filmes que ainda não tiveram tempo de recuperar o investimento (lançamentos recentes). Outros pontos interessantes de se anlisar seriam os filmes com baixos orçamentos e muito lucro, será que são estão corretos ou pode ser algum erro da base? Parece que nem sempre gastar uma tonelada de dinheiro vai gerar lucros absurdos, será que é isso é verdade?
+
+#Esse gráfico é muito rico em informações, vale a pena você gastar um tempo criando hipóteses.
+
+#Já que essa nova feature (lucro) parace ser interessante de se analisar, vamos continuar! Mas agora quero ver o lucro em relação ao ano de produção:
+
+
+budget_gross = imdb_usa.query("budget >0 | gross > 0")[["title_year", "lucro"]].dropna()
+
+sns.scatterplot(x="title_year", y="lucro", data = budget_gross)
+
+
+#Olha que legal esse gráfico, veja como alguns pontos mais recentes reforça a teoria de que alguns filmes podem ainda não ter recuperado o dinheiro investido (Claro que temos muitas variáveis para se analisar, mas é um indício relevante).
+
+#Outro ponto que chama muito atenção, são os filmes da década de 30 e 40 com lucros tão altos. Quais serão esses filmes? Bom, essa pergunta você vai responder no desafio do Paulo, que está louco para descobrir!
+
+#Falando em Paulo, ele sugeriu uma análise com os nome dos diretores e o orçamento de seus filmes, vamos ver se conseguimos concluir alguma coisa:
+
+
+filmes_por_diretor = imdb_usa["director_name"].value_counts()
+gross_director = imdb_usa[["director_name", "gross"]].set_index("director_name").join(filmes_por_diretor, on="director_name")
+gross_director.columns=["dindin", "filmes_irmaos"]
+gross_director = gross_director.reset_index()
+gross_director.head()
+
+sns.scatterplot(x="filmes_irmaos", y="dindin", data = gross_director)
+
+
+#Essa imagem aparentemente não é muito conclusiva, então não conseguimos inferir tantas informações.
+
+#Esse processo de gerar dados, visualizações e acabar não sendo conclusivo é muito comum na vida de um cientista de dados, pode ir se acostumando =P.
+
+#Para finalizar, que tal realizar uma análise das correlações dos dados? EXistem várias formas de calcular a correlação, esse é um assunto denso.Você pode ler mais sobre essas métricas neste link.
+
+#Vamos então inciar a análise das correlações plotando o pairplot.
+
+
+sns.pairplot(data = imdb_usa[["gross", "budget", "lucro", "title_year"]])
+
+
+#O pairplot mostra muita informação e a melhor forma de você entender é assistindo as conclusões que tiramos sobre esses gráficos na vídeoaula.
+
+#Embora plotamos um monte de informação, não necessariamente reduzimos a correlação em um número para simplificar a análise. Vamos fazer isso com a ajuda do .corr() do pandas.
+
+
+imdb_usa[["gross", "budget", "lucro", "title_year"]].corr()
+
+
+#Com o pandas é simples de se calcular a correlação, mas precisamos saber interpretar os resultados. Vamos fazer isso?
+
+#A correlação é uma métrica que vai de 1 a -1. Quando a correlação é 1, dizemos que é totalmente correlacionada (relação linear perfeita e positiva), ou seja se uma variável aumenta em 10 a outra também irá aumentar em 10. Quando o valor da correlação é -1, também temos variáveis totalmente correlacionda, só que de maneira negativa (relação linear perfeita negativa), neste caso, se uma variável aumenta em 10 a outra reduz em 10. Agora quando a correlação é 0 temos a inexistência de correlação, ou seja, uma variável não tem influêcia sobre a outra.
+
+#Agora sim, entendido sobre a correlação vamos analisar as nossas. Veja que lucro e gross tem uma correlação alta, o que indica que quanto maior o orçamento maior o lucro (mas repare que a correlação não é perfeita), já o title_yers e lucro tem correlação negativa, mas muito perto de zero (ou seja quase não tem correlação). Viu como conseguimos analisar muitas coisas com a correlação?! Pense e tente analisar os outros casos também.
+
+#Com isso chegamos ao final de mais uma aula da #quarentenadados. E aí, o que está achando, cada vez mais legal e ao mesmo tempo mais complexo né?
+
+#O que importa é estar iniciando e entendendo o que fazemos para analisar os dados! Continue até o fim, garanto que vai valer a pena. Vamos praticar?
+
+#Crie seu próprio notebook, reproduza nossa aula e resolva os desafios que deixamos para vocês.
+
+#Até a próxima aula!
+
+#P.S: A partir de agora teremos muitos desafios envolvendo mais análises e conclusões, então não haverá um "gabarito". O importante é você compartilhar suas soluções com os colegas e debater os seus resultados e das outras pessoas
+
+
+####################################################Fim da Aula 03############################################################################################
+
+
+####################################################Inicio da Aula 04#########################################################################################
+
+
+#Aqui iremos explorar e conhecer uma pequena amostra da base de dados do ENEM 2018. Esse será o primeiro passo para construir os modelos de machine learning da aula 05. Se você quiser estudar o código utilizado para criar o dataset desta aula, pode acessar este link aqui.
+
+#Vamos iniciar setando a precisão de casas decimais que o pandas irá exibir os dados (pd.options.display.float_format), depois lendo e conhecendo as informações contidas na base de dados.
+
+
+import pandas as pd
+
+%precision %.2f
+pd.options.display.float_format = '{:,.2f}'.format
+
+uri = "https://github.com/guilhermesilveira/enem-2018/blob/master/MICRODADOS_ENEM_2018_SAMPLE_43278.csv?raw=true"
+dados = pd.read_csv(uri)
+dados.head()
+
+
+#Conheça todas as colunas do nosso dataframe:
+
+print(dados.columns.values)
+
+
+#Na videoaula tivemos uma discussão muito bacana sobre uma visão geral dos dados e sua organização, e sobre ética na IA. Se você não assistiu eu recomendo que veja, não cabe aqui no notebook reproduzir a conversa, então vamos seguir com o desenvolvimento.
+
+#Conhecidas as informações, vamos chamar o describe() para analisá-las. Se atente ao detalhe que o describe só gera informação de dados numéricos!
+
+dados.describe()
+
+
+#A saída do describe traz várias estatísticas, de forma que algumas não fazem sentido ou não nos interessam neste momento. Entretanto, se você analisou as últimas colunas, viu que lá temos alguns dados relevantes: notas das provas e redação.
+
+#Desafio você a entrar nos detalhes das análises de notas e diversos outros campos! Como nosso tempo aqui é restrito, vamos analisar apenas as notas entre si, mas reflita: Será que existe uma correlação entre as notas? Quem tira notas maiores em redação também vai bem em linguagens?
+
+#Vamos analisar!
+
+
+colunas_de_notas = ['NU_NOTA_CN', 'NU_NOTA_CH', 'NU_NOTA_LC', 'NU_NOTA_MT', 'NU_NOTA_REDACAO']
+dados_notas = dados[colunas_de_notas].dropna()
+dados_notas.columns = ['ciencias_naturais', 'ciencias_humanas', 'linguagem_codigo', 'matematica', 'redacao']
+dados_notas.head()
+
+len(dados_notas)
+
+
+#Como queremos analisar as notas detalhadamente, no código acima separamos apenas os dados de interesse. Também removemos todos os valores vazios com o .dropna() e trocamos os nomes das colunas para ficar mais legível.
+
+#Por fim, agora nosso DF tem 97270 linhas e 5 colunas.
+
+#Agora sim, vamos calcular a correlação usando o .corr():
+
+corr = dados_notas.corr()
+corr
+
+
+#Temos vários resultados interessantes por aqui: o primeiro é uma correlação considerável entre linguagem_codigo e ciencias_humanas, o que parece fazer sentido. Uma correlação que surpreende é entre linguagem_codigo e redacao. Embora haja uma correlação maior em relação às outras matérias e redação, eu esperava um valor ainda maior do que o existente.
+
+#*Mais alguma correlação te chama a atenção? *
+
+#Eu tenho mais uma análise das correlações em geral! Repare que as correlações com linguagem_codigos sempre são as maiores e isso me faz pensar em várias hipóteses!
+
+#Será que se eu estudar mais português vou ter um desempenho melhor nas outras matérias? (lembre-se que o ENEM é uma prova que demanda interpretação de texto, então essa prerrogativa pode fazer sentido). Será que se eu considerar provas de anos anteriores e comparar as correlações com linguagem_códigos elas serão maiores?
+
+#A verdade é que uma simples análise de correlação nos gera diversas hipóteses. Se tiver curiosidade e quiser fazer essas análises fica como um desafio extra!
+
+#Na videoaula você viu que tentamos plotar diversos gráficos para visualizar a correlação de uma melhor forma. Abaixo seguem os códigos usados:
+
+
+from string import ascii_letters
+import numpy as np
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+
+# Generate a mask for the upper triangle
+mask = np.triu(np.ones_like(corr, dtype=np.bool))
+
+# Set up the matplotlib figure
+f, ax = plt.subplots(figsize=(11, 9))
+
+# Generate a custom diverging colormap
+cmap = sns.diverging_palette(220, 10, as_cmap=True)
+
+# Draw the heatmap with the mask and correct aspect ratio
+sns.heatmap(corr, mask=mask, cmap=cmap, vmax=.3, center=0,
+            square=True, linewidths=.5, cbar_kws={"shrink": .5})
+
+
+sns.heatmap(corr)
+
+
+
+#Depois de apanhar tentando criar boas imagens, resolvemos deixar esse desafio para você kkkkk... Resolva e dê aquela cornetada em nosso time uahuahha...
+
+#Ok, nós analisamos e conhecemos a base de dados, mas no final o que vou querer é construir um modelo de ML para fazer as predições de algumas notas. Para criar esse modelo de machine learning devemos analisar a distribuição dos nossos dados e verificar se existe alguma tendência entre eles, facilitando o processo preditivo.
+
+#Então, vamos ao pairplot:
+
+sns.pairplot(dados_notas)
+
+
+#Embora existam alguns dados com maior dispersão, outros parecem obedecer uma certa tendência. Dessa forma, desenvolver um modelo de ML com resultados razoáveis será complexo, porém possível (para detalhes das análises, acompanhe a discussão na videoaula).
+
+#Com isso chegamos ao final de mais uma aula da #quarentenadados. E aí, o que está achando?
+
+#Agora iremos entrar em uma área totalmente nova: o desenvolvimento de modelos de machine learning! Espero que você esteja empolgado(a) para conhecer um pouquinho mais sobre esse assunto!
+
+#Crie seu próprio notebook, reproduza nossa aula e resolva os desafios que deixamos para você.
+
+#Até a próxima aula!
+
+#P.S: A partir de agora você irá colocar a mão na massa, nossos desafios serão mais analítcos. Queremos que você vivencie o dia-a-dia de um ciêntista de dados, discutindo suas conclusões no Slack e estudando as análises de outros colegas, por isso não haverá gabarito.
+
+
+####################################################Fim da Aula 04############################################################################################
+
+
+####################################################Inicio da Aula 05#########################################################################################
+
+
+#Nessa aula discutiremos o que é o processo de classificação e como as máquinas podem aprender esse processo. Após essa discussão iniciaremos o tratamento dos dados para criar nosso primeiro modelo de ML.
+
+#A primeira coisa que devemos fazer é separar os dados que vamos usar como entrada do nosso modelo, dos que precisamos prever:
+
+
+x_4_notas = dados_notas[['ciencias_naturais', 'ciencias_humanas', 'matematica', 'redacao']]
+x_4_notas.head()
+
+
+#Vamos usar as notas das provas de ciências naturais, ciências humanas, matemática e redação para prever as notas da prova de linguagem e códigos.
+
+#Como separamos os dados de entrada, também devemos fazer o mesmo com aqueles que precisamos adivinhar.
+
+
+y_adivinhar = dados_notas['linguagem_codigo']
+y_adivinhar
+
+
+#Agora temos os dados que precisamos classificar, mas repare que essa é toda nossa informação! Se eu treinar um modelo com todos esses dados, como eu vou conseguir medir a qualidade do modelo?
+
+#Por isso precisamos dividir nossos dados em dois grupos, um para treino e outro para teste.
+
+#Para fazer isso vamos usar métodos da biblioteca Scikit-learn, ela é uma das principais ferramentas no mundo do Machine Learning! Vale conferir e estudar um pouco mais sobre ela, aqui está o link para a documentação.
+
+#Além do Sklearn, iremos utilizar o numpy para setar o seed dos números pseudo-aleatórios.
+
+
+from sklearn.model_selection import train_test_split
+import numpy as np
+
+np.random.seed(43267)
+
+# f(x) = y
+x_treino, x_teste, y_treino, y_teste = train_test_split(x_4_notas, y_adivinhar)
+
+print(x_treino.shape)
+print(x_teste.shape)
+print(y_treino.shape)
+print(y_teste.shape)
+
+
+x_treino.head()
+
+
+
+#Feita a divisão dos nossos dados, chegou a hora de criar seu primeiro modelo de Regressão(Em aula discutimos a diferença entre regressão e classificação).
+
+#Vamos utilizar o LinearSVR do scikit-learn:
+
+
+from sklearn.svm import LinearSVR
+
+modelo = LinearSVR()
+modelo.fit(x_treino, y_treino)
+
+
+#Até o momento nós treinamos o modelo apenas com o .fit(), mas falta fazer a predição dos resultados. Para realizar a predição chamamos o método .predict() do modelo.
+
+
+predicoes_notas_linguagem = modelo.predict(x_teste)
+predicoes_notas_linguagem[:5]
+
+
+#Compare a saída da predição com os valores reais logo abaixo, parece que está fazendo sentido, certo?!
+
+y_teste[:5]
+
+
+#Nos próximos trechos de códigos vamos plotar alguns gráficos! As discussões e todas as análises sobre estas visualizações foram feitas de forma muito rica na videoaula, portanto recomendo fortemente acompanhá-las.
+
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(9,9))
+sns.scatterplot(x=y_teste.values, y=predicoes_notas_linguagem)
+
+
+import matplotlib.pyplot as plt
+
+plt.figure(figsize=(9,9))
+sns.scatterplot(x=y_teste.values, y=y_teste.values - predicoes_notas_linguagem)
+
+
+import matplotlib.pyplot as plt
+
+# minha predição TOSCA. Dummy!
+plt.figure(figsize=(9,9))
+sns.scatterplot(x=y_teste.values, y=y_teste - x_teste.mean(axis=1))
+
+import matplotlib.pyplot as plt
+
+# predição do paulo TOSCA. Dummy!
+plt.figure(figsize=(9,9))
+sns.scatterplot(x=y_teste.values, y=y_teste - y_treino.mean())
+
+
+#Após discutir esses gráficos, vamos criar mais um modelo de machine learning basededo em "árvores":
+
+from sklearn.tree import DecisionTreeRegressor
+
+modelo = DecisionTreeRegressor()
+modelo.fit(x_treino, y_treino)
+predicoes_notas_linguagem = modelo.predict(x_teste)
+plt.figure(figsize=(9,9))
+sns.scatterplot(x=y_teste.values, y=predicoes_notas_linguagem)
+
+
+plt.figure(figsize=(9,9))
+sns.scatterplot(x=x_teste['matematica'].values, y=predicoes_notas_linguagem)
+sns.scatterplot(x=x_teste['matematica'].values, y=y_teste.values)
+
+
+#Após treinar o modelo e fazer as predições, plotamos duas imagens. A primeira é muito parecida com as os gráficos do primeiro classificador, mas a segunda mostra os valores reais e valores previstos!
+
+#Essa figura é muito interessante e mostra uma sobreposição muito boa entre elas, indicando que nossos resultados fazem sentido.
+
+#Avaliar os modelos por imagens é uma forma relevante, mas não resume a informação muito bem, por isso ficaria complexo avaliar dois ou três modelos apenas com gráficos.
+
+#O que precisamos agora é de uma métrica capaz de nos dizer como nosso modelo está indo, aqui vamos usar o erro quadrático médio. Existem centenas de métricas de avaliação, tudo vai depender do que você precisa e o que você está prevendo.
+
+
+from sklearn.metrics import mean_squared_error
+
+mean_squared_error(y_teste, predicoes_notas_linguagem)
+
+
+#Veja que nosso erro quadrático médio deu em torno dos 4186.22. Embora pelo gráfico nosso modelo pareça muito bom, pela métrica parece ser um pouco alto.
+
+#O MSE, sigla em inglês para essá métrica, é uma medida que quanto mais perto de zero melhor. Veja o resultado quando calculamos o MSE de dois vetores iguais:
+
+mean_squared_error(y_teste, y_teste)
+
+
+#Nosso resultado é zero! Você deve estar se perguntando: meu modelo não está nem perto de zero, será que ele é tão ruim assim?
+
+#Nós ainda não temos como te dar essa resposta, precisamos de um critério comparativo, pois assim conseguimos dizer como nosso modelo está indo. Por exemplo, que tal classificar os nossos dados de uma maneira "bobinha"? Para isso temos os chamados métodos Dummy.
+
+
+from sklearn.dummy import DummyRegressor
+
+modelo_dummy = DummyRegressor()
+modelo_dummy.fit(x_treino, y_treino)
+dummy_predicoes = modelo_dummy.predict(x_teste)
+
+mean_squared_error(y_teste, dummy_predicoes)
+
+
+#Finalmente conseguimos responder se nosso modelo é tão ruim assim! Na realidade nosso modelo não é um dos melhores, temos muito o que melhorar, mas já somos melhores que uma classificação ingênua.
+
+#Com isso, encerramos nossa última aula. Espero que vocês tenham gostado!
+
+#Participem também do nosso desafio final, valendo um Nintendo Switch.
+
+#Bons estudos e boa sorte!
+
+#Forte abraço!
